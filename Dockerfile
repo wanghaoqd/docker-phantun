@@ -8,7 +8,7 @@ ARG PHANTUN_VER=v0.8.1
 ENV ARCH=x86_64-unknown-linux-musl
 
 # 下载、解压官方 Release
-RUN wget https://mirror.ghproxy.com/https://github.com/dndx/phantun/releases/download/${PHANTUN_VER}/phantun_${ARCH}.zip -O /tmp/phantun.zip && \
+RUN wget https://github.com/dndx/phantun/releases/download/${PHANTUN_VER}/phantun_${ARCH}.zip -O /tmp/phantun.zip && \
     unzip /tmp/phantun.zip -d /usr/local/bin/ && \
     chmod +x /usr/local/bin/phantun_server /usr/local/bin/phantun_client && \
     rm /tmp/phantun.zip
