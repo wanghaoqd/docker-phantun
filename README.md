@@ -21,8 +21,10 @@
 **一、基础准备**
 
 家里虚拟机和 VPS 上**都要开启**内核 IPv4 转发：  
-`echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf`  
-`sudo sysctl -p`  
+```
+echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
 *注：VPS 端的防火墙需开启 TCP 20000 端口的入站放行。*
 
 ## ---
@@ -37,18 +39,20 @@
 ### **2\. 部署 Phantun 服务端**
 
 创建 Phantun 服务端的 Docker Compose 配置文件 docker-compose.yml，内容如下：  
-`services:`  
-  `phantun-server:`  
-    `image: metrak/phantun:latest`  
-    `container_name: phantun-server`  
-    `network_mode: "host"`  
-    `cap_add: [NET_ADMIN]`  
-    `devices: [/dev/net/tun]`  
-    `environment:`  
-      `- NIC=ens18        # 用 ip add 或 ifconfig 查一下网卡的真实名称`  
-      `- TCP_PORT=20000   # Phantun 监听的公网伪装 TCP 端口`  
-    `command: ["server", "--local", "20000", "--remote", "127.0.0.1:10000"]`  
-    `restart: unless-stopped`  
+```
+services:
+  phantun-server:
+    image: metrak/phantun:latest
+    container_name: phantun-server
+    network_mode: "host"
+    cap_add: [NET_ADMIN]
+    devices: [/dev/net/tun]
+    environment:
+      - NIC=ens18        # 用 ip add 或 ifconfig 查一下网卡的真实名称
+      - TCP_PORT=20000   # Phantun 监听的公网伪装 TCP 端口
+    command: ["server", "--local", "20000", "--remote", "127.0.0.1:10000"]
+    restart: unless-stopped
+```
 保存退出后，启动容器：  
 `docker compose up -d`
 
@@ -64,18 +68,20 @@
 ### **2\. 部署 Phantun 客户端**
 
 创建 Phantun 客户端的 Docker Compose 配置文件 docker-compose.yml，内容如下：  
-`services:`  
-  `phantun-client:`  
-    `image: metrak/phantun:latest`  
-    `container_name: phantun-client`  
-    `network_mode: "host"`  
-    `cap_add: [NET_ADMIN]`  
-    `devices: [/dev/net/tun]`  
-    `environment:`  
-      `- NIC=ens18        # 用 ip add 或 ifconfig 查一下网卡的真实名称`  
-      `- TCP_PORT=20000`  
-    `command: ["client", "--local", "127.0.0.1:10000", "--remote", "你的VPS公网IP:20000"]`  
-    `restart: unless-stopped`  
+```
+services:
+  phantun-client:
+    image: metrak/phantun:latest
+    container_name: phantun-client
+    network_mode: "host"
+    cap_add: [NET_ADMIN]
+    devices: [/dev/net/tun]
+    environment:
+      - NIC=ens18        # 用 ip add 或 ifconfig 查一下网卡的真实名称
+      - TCP_PORT=20000
+    command: ["client", "--local", "127.0.0.1:10000", "--remote", "你的VPS公网IP:20000"]
+    restart: unless-stopped
+```
 保存退出后，启动容器：  
 `docker compose up -d`
 
